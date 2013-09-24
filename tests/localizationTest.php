@@ -41,6 +41,8 @@ class localizationTest extends \PHPUnit_Framework_TestCase {
     /**
      * Check that header gets sent correctly, if at all
      *
+     * @TODO This is yet very bad tested, improve it later on!
+     *
      * @dataProvider provider_sendHeaders
      */
     public function test_sendHeaders($charset, $contentType, $expected) {
