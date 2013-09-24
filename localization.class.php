@@ -164,7 +164,16 @@ class localization extends \Locale {
      * @param unknown_type $locale
      * @return string
      */
-    public function getTimezeoneOffset($locale='') {
+    public function getTimezeoneOffset($locale='', $unit='seconds') {
+        switch ($unit) {
+            case 'minutes':
+                break;
+            case 'hours':
+                break;
+            default:
+                // Defaults is seconds
+                break;
+        }
         return '';
     }
 }

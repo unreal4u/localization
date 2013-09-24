@@ -24,7 +24,7 @@ foreach ($testLocales as $testLocale) {
         printf('. Currency Symbol: %s<br />', $locale->getCurrencyISOCode());
         printf('Date: <strong>%s</strong><br />', $locale->formatSimpleDate());
         printf('Time: <strong>%s</strong><br />', $locale->formatSimpleTime());
-        printf('Offset: <strong>%s</strong><br />', $locale->getTimezeoneOffset());
+        printf('Timezone offset: <strong>%s</strong><br />', $locale->getTimezeoneOffset());
         printf('---<br />');
     }
 }
