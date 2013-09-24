@@ -23,6 +23,8 @@ class localization extends \Locale {
     /**
      * Sets the locale to the given locale
      *
+     * This function will also set the "old" setlocale, mainly timezone support for PHP5.3 - PHP5.5
+     *
      * @param string $locale Locale we want to set in RFC 4646 format
      * @return string Returns the setted locale
      */
@@ -40,6 +42,13 @@ class localization extends \Locale {
         return $result;
     }
 
+    /**
+     * Sends header to browser containing charset and contentType (mandatory)
+     *
+     * @param string $charset Charset to send to browser. Defaults to UTF-8
+     * @param string $contentType ContentType to send to browser. Defaults to text/html
+     * @return boolean Returns true if headers could be sent, false otherwise
+     */
     public function sendHeaders($charset='UTF-8', $contentType='text/html') {
         $return = false;
 
@@ -68,16 +77,34 @@ class localization extends \Locale {
         return \Locale::getDefault();
     }
 
+    /**
+     * Applies simple rules to print a number
+     *
+     * @param float $value
+     * @return string Returns the given value formatted according to current locale
+     */
     public function formatSimpleNumber($value=0) {
         $numberFormatter = new \NumberFormatter(\Locale::getDefault(), \NumberFormatter::DECIMAL);
         return $numberFormatter->format($value);
     }
 
+    /**
+     * Applies simple rules to print a currency
+     *
+     * This will also print the currency symbol
+     *
+     * @param string $value Returns the given value formatted according to current locale
+     */
     public function formatSimpleCurrency($value=0) {
         $numberFormatter = new \NumberFormatter(\Locale::getDefault(), \NumberFormatter::CURRENCY);
         return $numberFormatter->format($value);
     }
 
+    /**
+     * Returns the 3-letter (ISO 4217) currency code of the current locale
+     *
+     * @return string
+     */
     public function getCurrencyISOCode() {
         return self::$_localeInfo['int_curr_symbol'];
     }
@@ -131,8 +158,13 @@ class localization extends \Locale {
         return $dateObject->format($value);
     }
 
+    /**
+     * @TODO Implement this
+     *
+     * @param unknown_type $locale
+     * @return string
+     */
     public function getTimezeoneOffset($locale='') {
-
         return 'asdf';
     }
 }
