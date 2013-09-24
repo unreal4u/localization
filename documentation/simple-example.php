@@ -8,7 +8,7 @@ $testNumbers = array(0, 1, 3, 3.1415, -45.33, 20000);
 
 $locale->sendHeaders();
 
-var_dump(timezone_abbreviations_list());
+#var_dump(timezone_abbreviations_list());
 
 foreach ($testLocales as $testLocale) {
     if (empty($testLocale)) {
@@ -24,7 +24,7 @@ foreach ($testLocales as $testLocale) {
         printf('. Currency Symbol: %s<br />', $locale->getCurrencyISOCode());
         printf('Date: <strong>%s</strong><br />', $locale->formatSimpleDate());
         printf('Time: <strong>%s</strong><br />', $locale->formatSimpleTime());
-        printf('Offset: <strong>%s</strong>', $locale->getTimezeoneOffset());
+        printf('Offset: <strong>%s</strong><br />', $locale->getTimezeoneOffset());
         printf('---<br />');
     }
 }

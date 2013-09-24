@@ -165,6 +165,6 @@ class localization extends \Locale {
      * @return string
      */
     public function getTimezeoneOffset($locale='') {
-        return 'asdf';
+        return '';
     }
 }
