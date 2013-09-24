@@ -68,41 +68,6 @@ class localizationTest extends \PHPUnit_Framework_TestCase {
         $mapValues[] = array('ko-KR', 1234.5678,  -1, 6,  '1,234.5678');
         $mapValues[] = array('ko-KR', -1234.5678, -1, 2,  '-1,234.57');
 
-        $mapValues[] = array('nl-NL', 0, -1, -1, '0');
-        $mapValues[] = array('nl-NL', 0,  2, -1, '0,00');
-        $mapValues[] = array('nl-NL', 0,  2,  6, '0,00');
-        $mapValues[] = array('nl-NL', 1234.5678,  -1, -1, '1.234,568');
-        $mapValues[] = array('nl-NL', 1234.5678,  -1, 6,  '1.234,5678');
-        $mapValues[] = array('nl-NL', -1234.5678, -1, 2,  '-1.234,57');
-
-        $mapValues[] = array('de-DE', 0, -1, -1, '0');
-        $mapValues[] = array('de-DE', 0,  2, -1, '0,00');
-        $mapValues[] = array('de-DE', 0,  2,  6, '0,00');
-        $mapValues[] = array('de-DE', 1234.5678,  -1, -1, '1.234,568');
-        $mapValues[] = array('de-DE', 1234.5678,  -1, 6,  '1.234,5678');
-        $mapValues[] = array('de-DE', -1234.5678, -1, 2,  '-1.234,57');
-
-        $mapValues[] = array('en-CA', 0, -1, -1, '0');
-        $mapValues[] = array('en-CA', 0,  2, -1, '0.00');
-        $mapValues[] = array('en-CA', 0,  2,  6, '0.00');
-        $mapValues[] = array('en-CA', 1234.5678,  -1, -1, '1,234.568');
-        $mapValues[] = array('en-CA', 1234.5678,  -1, 6,  '1,234.5678');
-        $mapValues[] = array('en-CA', -1234.5678, -1, 2,  '-1,234.57');
-
-        $mapValues[] = array('en-GB', 0, -1, -1, '0');
-        $mapValues[] = array('en-GB', 0,  2, -1, '0.00');
-        $mapValues[] = array('en-GB', 0,  2,  6, '0.00');
-        $mapValues[] = array('en-GB', 1234.5678,  -1, -1, '1,234.568');
-        $mapValues[] = array('en-GB', 1234.5678,  -1, 6,  '1,234.5678');
-        $mapValues[] = array('en-GB', -1234.5678, -1, 2,  '-1,234.57');
-
-        $mapValues[] = array('en-US', 0, -1, -1, '0');
-        $mapValues[] = array('en-US', 0,  2, -1, '0.00');
-        $mapValues[] = array('en-US', 0,  2,  6, '0.00');
-        $mapValues[] = array('en-US', 1234.5678,  -1, -1, '1,234.568');
-        $mapValues[] = array('en-US', 1234.5678,  -1, 6,  '1,234.5678');
-        $mapValues[] = array('en-US', -1234.5678, -1, 2,  '-1,234.57');
-
         return $mapValues;
     }
 
