@@ -27,8 +27,32 @@ class localizationTest extends \PHPUnit_Framework_TestCase {
         parent::tearDown();
     }
 
-    public function test_sendHeaders() {
-        $this->markTestIncomplete('Not completed yet');
+    /**
+     * Provider for test_sendHeaders
+     *
+     * @return array
+     */
+    public function provider_sendHeaders() {
+        $mapValues[] = array('UTF-8', 'text/html', true);
+
+        return $mapValues;
+    }
+
+    /**
+     * Check that header gets sent correctly, if at all
+     *
+     * @dataProvider provider_sendHeaders
+     */
+    public function test_sendHeaders($charset, $contentType, $expected) {
+        $result = $this->localization->sendHeaders($charset, $contentType);
+
+        if ($result === true) {
+            $headers = xdebug_get_headers();
+            $this->assertNotEmpty($headers);
+            $this->assertEquals($headers[0], 'Content-type: '.$contentType.'; charset='.$charset);
+        } else {
+            $this->assertFalse($result);
+        }
     }
 
     /**
