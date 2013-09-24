@@ -52,7 +52,7 @@ class localization extends \Locale {
     public function sendHeaders($charset='UTF-8', $contentType='text/html') {
         $return = false;
 
-        if (!headers_sent()) {
+        if (!headers_sent() && !empty($contentType)) {
             $headerString = sprintf('Content-type: %s', $contentType);
             if (!empty($charset)) {
                 $headerString .= sprintf('; charset='.$charset);
@@ -77,14 +77,29 @@ class localization extends \Locale {
         return \Locale::getDefault();
     }
 
+    private function _setAttribute($object, $attribute, $value) {
+        $object->setAttribute($attribute, $value);
+        return true;
+    }
+
     /**
      * Applies simple rules to print a number
      *
      * @param float $value
+     * @param int $minimumDigits The minimum significant digits. Defaults to -1, which equals locale default
+     * @param int $maximumDigits The maximum significant digits. Defaults to -1, which equals locale default
      * @return string Returns the given value formatted according to current locale
      */
-    public function formatSimpleNumber($value=0) {
+    public function formatSimpleNumber($value=0, $minimumDigits=-1, $maximumDigits=-1) {
         $numberFormatter = new \NumberFormatter(\Locale::getDefault(), \NumberFormatter::DECIMAL);
+
+        if ($minimumDigits > -1) {
+            $this->_setAttribute($numberFormatter, \NumberFormatter::MIN_FRACTION_DIGITS, $minimumDigits);
+        }
+
+        if ($maximumDigits > -1) {
+            $this->_setAttribute($numberFormatter, \NumberFormatter::MAX_FRACTION_DIGITS, $maximumDigits);
+        }
         return $numberFormatter->format($value);
     }
 
@@ -94,9 +109,19 @@ class localization extends \Locale {
      * This will also print the currency symbol
      *
      * @param string $value Returns the given value formatted according to current locale
+     * @param int $minimumDigits The minimum significant digits. Defaults to -1, which equals locale default
+     * @param int $maximumDigits The maximum significant digits. Defaults to -1, which equals locale default
+     * @return string Returns the given value formatted according to current locale
      */
-    public function formatSimpleCurrency($value=0) {
+    public function formatSimpleCurrency($value=0, $minimumDigits=-1, $maximumDigits=-1) {
         $numberFormatter = new \NumberFormatter(\Locale::getDefault(), \NumberFormatter::CURRENCY);
+            if ($minimumDigits > -1) {
+            $this->_setAttribute($numberFormatter, \NumberFormatter::MIN_FRACTION_DIGITS, $minimumDigits);
+        }
+
+        if ($maximumDigits > -1) {
+            $this->_setAttribute($numberFormatter, \NumberFormatter::MAX_FRACTION_DIGITS, $maximumDigits);
+        }
         return $numberFormatter->format($value);
     }
 
@@ -106,7 +131,8 @@ class localization extends \Locale {
      * @return string
      */
     public function getCurrencyISOCode() {
-        return self::$_localeInfo['int_curr_symbol'];
+        $numberFormatter = new \NumberFormatter(\Locale::getDefault(), \NumberFormatter::CURRENCY);
+        return $numberFormatter->getSymbol(\NumberFormatter::INTL_CURRENCY_SYMBOL);
     }
 
     /**
