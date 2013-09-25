@@ -191,7 +191,7 @@ class localizationTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals($result, $expected);
     }
 
-    public function test_getTimezeoneOffset() {
+    public function test_getTimezoneOffset() {
         $this->markTestIncomplete('Not completed yet');
     }
 }
