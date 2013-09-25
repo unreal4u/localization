@@ -216,7 +216,7 @@ class localization extends \Locale {
         if (!empty($region)) {
             self::$_timezoneCandidates = \DateTimeZone::listIdentifiers(\DateTimeZone::PER_COUNTRY, $region);
             if (!empty(self::$_timezoneCandidates) && count(self::$_timezoneCandidates) == 1) {
-                $this->timezone = new \DateTimeZone(self::$_timezoneCandidates[0]);
+                #$this->timezone = new \DateTimeZone(self::$_timezoneCandidates[0]);
             }
         }
     }
