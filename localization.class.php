@@ -15,6 +15,12 @@ class localization {
     public $timezone;
 
     /**
+     * The timezoneId we are in
+     * @var string
+     */
+    public $timezoneId = '';
+
+    /**
      * Contains the most probable language associated with the selected locale (2 letter code)
      * @var string
      */
@@ -234,18 +240,19 @@ class localization {
     private function _setTimezoneCandidates($region='') {
         if (!empty($region)) {
             $this->_timezoneCandidates = \DateTimeZone::listIdentifiers(\DateTimeZone::PER_COUNTRY, $region);
+            $this->timezone = new \DateTimeZone('UTC');
+            $this->timezoneId = '';
             if (!empty($this->_timezoneCandidates) && count($this->_timezoneCandidates) == 1) {
                 $this->timezone = new \DateTimeZone($this->_timezoneCandidates[0]);
-            } else {
-                $this->timezone = new \DateTimeZone('UTC');
+                $this->timezoneId = $this->timezone->getName();
             }
         }
     }
 
     /**
-     * @TODO Implement this
+     * Gets the offset for the current timezone
      *
-     * @param unknown_type $locale
+     * @param string $unit
      * @return string
      */
     public function getTimezoneOffset($unit='seconds') {
