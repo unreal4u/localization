@@ -45,7 +45,6 @@ class localization {
      */
     public function __construct($setLocale='') {
         $this->setDefault($setLocale);
-        $this->timezone = new \DateTimeZone('UTC');
     }
 
     /**
