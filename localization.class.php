@@ -6,7 +6,7 @@ namespace u4u;
  *
  * @author unreal4u
  */
-class localization extends \Locale {
+class localization {
 
     /**
      * Saves the current timezone settings
@@ -14,13 +14,23 @@ class localization extends \Locale {
      */
     public $timezone;
 
-    public static $_timezoneCandidates = array();
-
     /**
-     * Contains the most probable language associated with the selected locale
+     * Contains the most probable language associated with the selected locale (2 letter code)
      * @var string
      */
-    public static $language = '';
+    public $language = '';
+
+    /**
+     * Which are the most probable timezone candidates for the current setted locale
+     * @var array
+     */
+    protected $_timezoneCandidates = array();
+
+    /**
+     * Contains the value of the current setted locale
+     * @var string
+     */
+    protected $_currentLocale = '';
 
     /**
      * Constructor, will call setLocale internally
@@ -40,28 +50,36 @@ class localization extends \Locale {
      * @param string $locale Locale we want to set in RFC 4646 format
      * @return string Returns the setted locale
      */
-    public static function setDefault($locale) {
+    public function setDefault($locale) {
         $result = '';
         if (!empty($locale)) {
-            $locale = self::parseLocale($locale);
-            $locale = self::composeLocale($locale);
-            parent::setDefault($locale);
-            $result = self::getDefault();
-            self::_setOptions($result);
+            $locale = \Locale::parseLocale($locale);
+            $locale = \Locale::composeLocale($locale);
+            \Locale::setDefault($locale);
+            $result = $this->getDefault();
+            $this->_setOptions();
         }
 
         return $result;
     }
 
     /**
+     * Gets the default setted locale
+     */
+    public function getDefault() {
+        $this->_currentLocale = \Locale::getDefault();
+        return $this->_currentLocale;
+    }
+
+    /**
      * Sets some options
      *
-     * @param unknown_type $locale
+     * @param string $locale
      * @return boolean
      */
-    private static function _setOptions($locale) {
-        self::$language = self::getPrimaryLanguage($locale);
-        self::_setTimezoneCandidates(self::getRegion($locale));
+    private function _setOptions() {
+        $this->language = \Locale::getPrimaryLanguage($this->_currentLocale);
+        $this->_setTimezoneCandidates(\Locale::getRegion($this->_currentLocale));
         return true;
     }
 
@@ -94,10 +112,10 @@ class localization extends \Locale {
      */
     public function autodetectLocale() {
         if (!empty($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
-            $this->setDefault(self::acceptFromHttp($_SERVER['HTTP_ACCEPT_LANGUAGE']));
+            $this->setDefault(\Locale::acceptFromHttp($_SERVER['HTTP_ACCEPT_LANGUAGE']));
         }
 
-        return self::getDefault();
+        return $this->_currentLocale;
     }
 
     private function _setAttribute($object, $attribute, $value) {
@@ -114,7 +132,7 @@ class localization extends \Locale {
      * @return string Returns the given value formatted according to current locale
      */
     public function formatSimpleNumber($value=0, $minimumDigits=-1, $maximumDigits=-1) {
-        $numberFormatter = new \NumberFormatter(self::getDefault(), \NumberFormatter::DECIMAL);
+        $numberFormatter = new \NumberFormatter($this->_currentLocale, \NumberFormatter::DECIMAL);
 
         if ($minimumDigits > -1) {
             $this->_setAttribute($numberFormatter, \NumberFormatter::MIN_FRACTION_DIGITS, $minimumDigits);
@@ -137,8 +155,9 @@ class localization extends \Locale {
      * @return string Returns the given value formatted according to current locale
      */
     public function formatSimpleCurrency($value=0, $minimumDigits=-1, $maximumDigits=-1) {
-        $numberFormatter = new \NumberFormatter(self::getDefault(), \NumberFormatter::CURRENCY);
-            if ($minimumDigits > -1) {
+        $numberFormatter = new \NumberFormatter($this->_currentLocale, \NumberFormatter::CURRENCY);
+
+        if ($minimumDigits > -1) {
             $this->_setAttribute($numberFormatter, \NumberFormatter::MIN_FRACTION_DIGITS, $minimumDigits);
         }
 
@@ -154,7 +173,7 @@ class localization extends \Locale {
      * @return string
      */
     public function getCurrencyISOCode() {
-        $numberFormatter = new \NumberFormatter(self::getDefault(), \NumberFormatter::CURRENCY);
+        $numberFormatter = new \NumberFormatter($this->_currentLocale, \NumberFormatter::CURRENCY);
         return $numberFormatter->getSymbol(\NumberFormatter::INTL_CURRENCY_SYMBOL);
     }
 
@@ -166,7 +185,7 @@ class localization extends \Locale {
      * @return \IntlDateFormatter Returns a \IntlDateFormatter object with given options
      */
     private function _getDateObject($dateConstant=\IntlDateFormatter::MEDIUM, $timeConstant=\IntlDateFormatter::NONE) {
-        return new \intlDateFormatter(self::getDefault(), $dateConstant, $timeConstant);
+        return new \intlDateFormatter($this->_currentLocale, $dateConstant, $timeConstant);
     }
 
     /**
@@ -212,11 +231,13 @@ class localization extends \Locale {
      *
      * @param string $region
      */
-    private static function _setTimezoneCandidates($region='') {
+    private function _setTimezoneCandidates($region='') {
         if (!empty($region)) {
-            self::$_timezoneCandidates = \DateTimeZone::listIdentifiers(\DateTimeZone::PER_COUNTRY, $region);
-            if (!empty(self::$_timezoneCandidates) && count(self::$_timezoneCandidates) == 1) {
-                #$this->timezone = new \DateTimeZone(self::$_timezoneCandidates[0]);
+            $this->_timezoneCandidates = \DateTimeZone::listIdentifiers(\DateTimeZone::PER_COUNTRY, $region);
+            if (!empty($this->_timezoneCandidates) && count($this->_timezoneCandidates) == 1) {
+                $this->timezone = new \DateTimeZone($this->_timezoneCandidates[0]);
+            } else {
+                $this->timezone = new \DateTimeZone('UTC');
             }
         }
     }
@@ -228,16 +249,18 @@ class localization extends \Locale {
      * @return string
      */
     public function getTimezoneOffset($unit='seconds') {
+        $dateTimeObject = new \DateTime("now", $this->timezone);
+        $return = $dateTimeObject->getOffset();
+
         switch ($unit) {
             case 'minutes':
+                $return = $return / 60;
                 break;
             case 'hours':
-                break;
-            default:
-                var_dump($this->timezone);
-                // Defaults is seconds
+                $return = $return / 60 / 60;
                 break;
         }
-        return '';
+
+        return $return;
     }
 }
