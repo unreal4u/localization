@@ -10,15 +10,15 @@ class localization {
 
     /**
      * Saves the current timezone settings
-     * @var unknown_type
+     * @var \DateTimeZone
      */
-    public $timezone;
+    public $timezone = null;
 
     /**
      * The timezoneId we are in
      * @var string
      */
-    public $timezoneId = '';
+    public $timezoneId = 'UTC';
 
     /**
      * Contains the most probable language associated with the selected locale (2 letter code)
@@ -123,7 +123,15 @@ class localization {
         return $this->_currentLocale;
     }
 
-    private function _setAttribute($object, $attribute, $value) {
+    /**
+     * Can set special attributes to the given numberFormatter
+     *
+     * @param \NumberFormatter $object
+     * @param int $attribute The attribute to set
+     * @param mixed $value
+     * @return boolean
+     */
+    private function _setAttribute(\NumberFormatter $object, $attribute, $value) {
         $object->setAttribute($attribute, $value);
         return true;
     }
@@ -190,7 +198,7 @@ class localization {
      * @return \IntlDateFormatter Returns a \IntlDateFormatter object with given options
      */
     private function _getDateObject($dateConstant=\IntlDateFormatter::MEDIUM, $timeConstant=\IntlDateFormatter::NONE) {
-        return new \intlDateFormatter($this->_currentLocale, $dateConstant, $timeConstant);
+        return \intlDateFormatter::create($this->_currentLocale, $dateConstant, $timeConstant, $this->timezoneId);
     }
 
     /**
@@ -239,13 +247,26 @@ class localization {
     private function _setTimezoneCandidates($region='') {
         if (!empty($region)) {
             $this->_timezoneCandidates = \DateTimeZone::listIdentifiers(\DateTimeZone::PER_COUNTRY, $region);
-            $this->timezone = new \DateTimeZone('UTC');
-            $this->timezoneId = '';
+            $this->setTimeZone();
             if (!empty($this->_timezoneCandidates) && count($this->_timezoneCandidates) == 1) {
-                $this->timezone = new \DateTimeZone($this->_timezoneCandidates[0]);
-                $this->timezoneId = $this->timezone->getName();
+                $this->setTimezone($this->_timezoneCandidates[0]);
             }
         }
+    }
+
+    /**
+     * Verifies that the given timezone exists and sets the timezone to the selected timezone
+     *
+     * @TODO Verify that the given timezone exists
+     *
+     * @param string $timezoneName
+     * @return string
+     */
+    public function setTimezone($timezoneName='UTC') {
+        $this->timezone = new \DateTimeZone($timezoneName);
+        $this->timezoneId = $this->timezone->getName();
+
+        return $this->timezoneId;
     }
 
     /**
