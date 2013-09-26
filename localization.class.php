@@ -197,8 +197,13 @@ class localization {
      * @param int $timeConstant
      * @return \IntlDateFormatter Returns a \IntlDateFormatter object with given options
      */
-    private function _getDateObject($dateConstant=\IntlDateFormatter::MEDIUM, $timeConstant=\IntlDateFormatter::NONE) {
-        return \intlDateFormatter::create($this->_currentLocale, $dateConstant, $timeConstant, $this->timezoneId);
+    private function _getDateObject($dateConstant=\IntlDateFormatter::MEDIUM, $timeConstant=\IntlDateFormatter::NONE, $timezone='') {
+        if (!empty($timezone) && $this->_checkTimeZoneExistance($timezone)) {
+            $timezoneId = $timezone;
+        } else {
+            $timezoneId = $this->timezoneId;
+        }
+        return \intlDateFormatter::create($this->_currentLocale, $dateConstant, $timeConstant, $timezoneId);
     }
 
     /**
@@ -211,12 +216,12 @@ class localization {
      * @param string $locale The locale in which we want the date
      * @return string The formatted date according to current locale settings
      */
-    public function formatSimpleDate($value=0, $type=\intlDateFormatter::MEDIUM, $locale='') {
+    public function formatSimpleDate($timezone='', $value=0, $type=\IntlDateFormatter::MEDIUM, $locale='') {
         if (empty($value)) {
             $value = time();
         }
 
-        $dateObject = $this->_getDateObject($type);
+        $dateObject = $this->_getDateObject($type, \IntlDateFormatter::NONE, $timezone);
         return $dateObject->format($value);
     }
 
@@ -225,17 +230,18 @@ class localization {
      *
      * @TODO Implement printing locale in another locale
      *
+     * @param string $timezone The timezone in which we want to print the time
      * @param int $value The UNIX timestamp we want to print. Defaults to current time
      * @param int $type The type of time we want to print
      * @param string $locale The locale in which we want the time
      * @return string The formatted time according to current locale settings
      */
-    public function formatSimpleTime($value=0, $type=\intlDateFormatter::MEDIUM, $locale='') {
+    public function formatSimpleTime($timezone='', $value=0, $type=\intlDateFormatter::MEDIUM) {
         if (empty($value)) {
             $value = time();
         }
 
-        $dateObject = $this->_getDateObject(\intlDateFormatter::NONE, $type);
+        $dateObject = $this->_getDateObject(\intlDateFormatter::NONE, $type, $timezone);
         return $dateObject->format($value);
     }
 
@@ -262,11 +268,26 @@ class localization {
      * @param string $timezoneName
      * @return string
      */
-    public function setTimezone($timezoneName='UTC') {
-        $this->timezone = new \DateTimeZone($timezoneName);
+    public function setTimezone($timeZoneName='UTC') {
+        if (!$this->_checkTimeZoneExistance($timeZoneName)) {
+            $timeZoneName = 'UTC';
+        }
+        $this->timezone = new \DateTimeZone($timeZoneName);
         $this->timezoneId = $this->timezone->getName();
 
         return $this->timezoneId;
+    }
+
+    /**
+     * Checks whether a timezonename is valid or not
+     *
+     * @TODO Implement this
+     *
+     * @param string $timeZoneName
+     * @return boolean Returns true if timezone name is valid, false otherwise
+     */
+    private function _checkTimeZoneExistance($timeZoneName) {
+        return true;
     }
 
     /**
