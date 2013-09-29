@@ -274,6 +274,17 @@ class localization {
     }
 
     /**
+     * Gets timezone candidates for the current locale
+     *
+     * @TODO Improve this
+     *
+     * @return array
+     */
+    public function getTimeZoneCandidates() {
+        return $this->_timezoneCandidates;
+    }
+
+    /**
      * Verifies that the given timezone exists and sets the timezone to the selected timezone
      *
      * @TODO Verify that the given timezone exists

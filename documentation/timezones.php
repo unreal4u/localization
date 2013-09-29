@@ -13,13 +13,14 @@ foreach ($testLocales as $testLocale) {
         $locale->setDefault($testLocale);
     }
 
-    if (!empty($locale->timezoneId)) {
+    if ($locale->timezoneId != 'UTC') {
         var_dump('Current locale: '.$locale->getDefault());
         var_dump('Time zone id: '.$locale->timezoneId);
-        var_dump('Offset is: '.$locale->getTimezoneOffset('hours'));
+        var_dump('Offset is: '.$locale->getTimezoneOffset('hours').' hours');
     } else {
         var_dump('Could not determine automatically the timezone for '.$locale->getDefault());
         var_dump('Please select one from the following list: ');
+        var_dump($locale->getTimeZoneCandidates());
     }
 
     var_dump(str_repeat('-', 80));
