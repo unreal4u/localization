@@ -3,7 +3,7 @@
 include('../localization.class.php');
 $locale = new \u4u\localization();
 
-$testLocales = array('pt-BR', 'es-CL', 'es-BO', 'pt-PT', 'ko-KR', 'nl-NL', 'jp-JP', 'nl-BE', 'de-DE', 'en-CA', 'en-GB', '');
+$testLocales = array('pt-BR', 'hi_IN', 'es-CL', 'es-BO', 'pt-PT', 'ko-KR', 'nl-NL', 'jp-JP', 'nl-BE', 'de-DE', 'en-CA', 'en-GB', '');
 $locale->sendHeaders();
 
 foreach ($testLocales as $testLocale) {

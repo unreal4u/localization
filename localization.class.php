@@ -4,7 +4,11 @@ namespace u4u;
 /**
  * Class that deals with localization settings
  *
- * @author unreal4u
+ * This class will handle everything related to locales for you: from number formatting 'till timezones. One particular
+ * caveat of this class however is that it doesn't know how to handle with countries that have more than 1 timezone. In
+ * this case, it will setup a list with candidates for you to choose from
+ *
+ * @author unreal4u / Camilo Sperberg - http://unreal4u.com/
  */
 class localization {
 
@@ -39,11 +43,20 @@ class localization {
     protected $_currentLocale = '';
 
     /**
+     * Contains a list of valid timezones
+     * @var array
+     */
+    protected $_validTimeZones = array();
+
+    /**
      * Constructor, will call setLocale internally
      *
      * @param string $setLocale
      */
     public function __construct($setLocale='') {
+        if (version_compare(PHP_VERSION, '5.3.0', '<')) {
+            throw new \Exception('You must have PHP 5.3.0+ in order to use this class');
+        }
         $this->setDefault($setLocale);
     }
 
@@ -198,7 +211,7 @@ class localization {
      * @return \IntlDateFormatter Returns a \IntlDateFormatter object with given options
      */
     private function _getDateObject($dateConstant=\IntlDateFormatter::MEDIUM, $timeConstant=\IntlDateFormatter::NONE, $timezone='') {
-        if (!empty($timezone) && $this->_checkTimeZoneExistance($timezone)) {
+        if (!empty($timezone) && $this->isValidTimeZone($timezone)) {
             $timezoneId = $timezone;
         } else {
             $timezoneId = $this->timezoneId;
@@ -216,7 +229,7 @@ class localization {
      * @param string $locale The locale in which we want the date
      * @return string The formatted date according to current locale settings
      */
-    public function formatSimpleDate($timezone='', $value=0, $type=\IntlDateFormatter::MEDIUM, $locale='') {
+    public function formatSimpleDate($value=0, $timezone='', $type=\IntlDateFormatter::MEDIUM, $locale='') {
         if (empty($value)) {
             $value = time();
         }
@@ -236,7 +249,7 @@ class localization {
      * @param string $locale The locale in which we want the time
      * @return string The formatted time according to current locale settings
      */
-    public function formatSimpleTime($timezone='', $value=0, $type=\intlDateFormatter::MEDIUM) {
+    public function formatSimpleTime($value=0, $timezone='', $type=\intlDateFormatter::MEDIUM) {
         if (empty($value)) {
             $value = time();
         }
@@ -269,7 +282,7 @@ class localization {
      * @return string
      */
     public function setTimezone($timeZoneName='UTC') {
-        if (!$this->_checkTimeZoneExistance($timeZoneName)) {
+        if (!$this->isValidTimeZone($timeZoneName)) {
             $timeZoneName = 'UTC';
         }
         $this->timezone = new \DateTimeZone($timeZoneName);
@@ -281,13 +294,30 @@ class localization {
     /**
      * Checks whether a timezonename is valid or not
      *
-     * @TODO Implement this
+     * Original idea from StackOverflow
+     * Modified a bit to adjust it to this class and PHPUnit tested it
+     *
+     * @link http://stackoverflow.com/a/5878722/396006
+     * @author http://stackoverflow.com/users/59120/cal
      *
      * @param string $timeZoneName
      * @return boolean Returns true if timezone name is valid, false otherwise
      */
-    private function _checkTimeZoneExistance($timeZoneName) {
-        return true;
+    public function isValidTimeZone($timeZoneName='') {
+        if (!is_string($timeZoneName)) {
+            $timeZoneName = '';
+        }
+
+        if (empty($this->_validTimeZones)) {
+            $tza = \DateTimeZone::listAbbreviations();
+            foreach ($tza as $zone) {
+                foreach ($zone as $item) {
+                    $this->_validTimeZones[$item['timezone_id']] = true;
+                }
+            }
+            unset($this->_validTimeZones[''], $tza, $zone, $item);
+        }
+        return isset($this->_validTimeZones[$timeZoneName]);
     }
 
     /**
@@ -307,8 +337,11 @@ class localization {
             case 'hours':
                 $return = $return / 60 / 60;
                 break;
+            case 'z':
+                // @TODO implement this (will return -0400 or +0100 as output)
+                break;
         }
 
-        return $return;
+        return (string)$return;
     }
 }
