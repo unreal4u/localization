@@ -63,8 +63,6 @@ class localization {
     /**
      * Sets the locale to the given locale
      *
-     * This function will also set the "old" setlocale, mainly timezone support for PHP5.3 - PHP5.5
-     *
      * @param string $locale Locale we want to set in RFC 4646 format
      * @return string Returns the setted locale
      */
