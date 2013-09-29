@@ -349,7 +349,7 @@ class localization {
                 $return = $return / 60 / 60;
                 break;
             case 'z':
-                // @TODO implement this (will return -0400 or +0100 as output)
+                // @TODO implement this (will return -0400 or +0100 as output as defined per ISO 8601)
                 break;
         }
 
