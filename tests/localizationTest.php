@@ -193,7 +193,35 @@ class localizationTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals($result, $expected);
     }
 
-    public function test_getTimezeoneOffset() {
+    public function provider_isValidTimeZone() {
+        $mapValues[] = array('America/Santiago', true);
+        $mapValues[] = array('Europe/Amsterdam', true);
+        $mapValues[] = array('UTC', true);
+        $mapValues[] = array('Invented/Invented', false);
+        $mapValues[] = array('', false);
+        $mapValues[] = array(false, false);
+        $mapValues[] = array(true, false);
+        $mapValues[] = array(null, false);
+        $mapValues[] = array(array(), false);
+        $mapValues[] = array(3, false);
+        $mapValues[] = array(3.1415, false);
+
+        return $mapValues;
+    }
+
+    /**
+     * Tests isValidTimeZone
+     *
+     * @dataProvider provider_isValidTimeZone
+     * @param unknown $timezone
+     * @param unknown $expected
+     */
+    public function test_isValidTimeZone($timezone, $expected) {
+        $result = $this->localization->isValidTimeZone($timezone);
+        $this->assertEquals($result, $expected);
+    }
+
+    public function test_getTimezoneOffset() {
         $this->markTestIncomplete('Not completed yet');
     }
 }

@@ -4,11 +4,49 @@ namespace u4u;
 /**
  * Class that deals with localization settings
  *
- * @author unreal4u
+ * This class will handle everything related to locales for you: from number formatting 'till timezones. One particular
+ * caveat of this class however is that it doesn't know how to handle with countries that have more than 1 timezone. In
+ * this case, it will setup a list with candidates for you to choose from
+ *
+ * @author unreal4u / Camilo Sperberg - http://unreal4u.com/
  */
-class localization extends \Locale {
-    private static $_localeInfo = array();
-    public $timezone;
+class localization {
+
+    /**
+     * Saves the current timezone settings
+     * @var \DateTimeZone
+     */
+    public $timezone = null;
+
+    /**
+     * The timezoneId we are in
+     * @var string
+     */
+    public $timezoneId = 'UTC';
+
+    /**
+     * Contains the most probable language associated with the selected locale (2 letter code)
+     * @var string
+     */
+    public $language = '';
+
+    /**
+     * Which are the most probable timezone candidates for the current setted locale
+     * @var array
+     */
+    protected $_timezoneCandidates = array();
+
+    /**
+     * Contains the value of the current setted locale
+     * @var string
+     */
+    protected $_currentLocale = '';
+
+    /**
+     * Contains a list of valid timezones
+     * @var array
+     */
+    protected $_validTimeZones = array();
 
     /**
      * Constructor, will call setLocale internally
@@ -16,8 +54,10 @@ class localization extends \Locale {
      * @param string $setLocale
      */
     public function __construct($setLocale='') {
+        if (version_compare(PHP_VERSION, '5.3.0', '<')) {
+            throw new \Exception('You must have PHP 5.3.0+ in order to use this class');
+        }
         $this->setDefault($setLocale);
-        $this->timezone = new \DateTimeZone('UTC');
     }
 
     /**
@@ -28,18 +68,37 @@ class localization extends \Locale {
      * @param string $locale Locale we want to set in RFC 4646 format
      * @return string Returns the setted locale
      */
-    public static function setDefault($locale) {
+    public function setDefault($locale) {
         $result = '';
         if (!empty($locale)) {
-            $locale = self::parseLocale($locale);
-            $locale = self::composeLocale($locale);
-            setlocale(LC_ALL, $locale);
-            self::$_localeInfo = localeconv();
-            parent::setDefault($locale);
-            $result = self::getDefault();
+            $locale = \Locale::parseLocale($locale);
+            $locale = \Locale::composeLocale($locale);
+            \Locale::setDefault($locale);
+            $result = $this->getDefault();
+            $this->_setOptions();
         }
 
         return $result;
+    }
+
+    /**
+     * Gets the default setted locale
+     */
+    public function getDefault() {
+        $this->_currentLocale = \Locale::getDefault();
+        return $this->_currentLocale;
+    }
+
+    /**
+     * Sets some options
+     *
+     * @param string $locale
+     * @return boolean
+     */
+    private function _setOptions() {
+        $this->language = \Locale::getPrimaryLanguage($this->_currentLocale);
+        $this->_setTimezoneCandidates(\Locale::getRegion($this->_currentLocale));
+        return true;
     }
 
     /**
@@ -71,13 +130,21 @@ class localization extends \Locale {
      */
     public function autodetectLocale() {
         if (!empty($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
-            $this->setDefault(self::acceptFromHttp($_SERVER['HTTP_ACCEPT_LANGUAGE']));
+            $this->setDefault(\Locale::acceptFromHttp($_SERVER['HTTP_ACCEPT_LANGUAGE']));
         }
 
-        return self::getDefault();
+        return $this->_currentLocale;
     }
 
-    private function _setAttribute($object, $attribute, $value) {
+    /**
+     * Can set special attributes to the given numberFormatter
+     *
+     * @param \NumberFormatter $object
+     * @param int $attribute The attribute to set
+     * @param mixed $value
+     * @return boolean
+     */
+    private function _setAttribute(\NumberFormatter $object, $attribute, $value) {
         $object->setAttribute($attribute, $value);
         return true;
     }
@@ -91,7 +158,7 @@ class localization extends \Locale {
      * @return string Returns the given value formatted according to current locale
      */
     public function formatSimpleNumber($value=0, $minimumDigits=-1, $maximumDigits=-1) {
-        $numberFormatter = new \NumberFormatter(self::getDefault(), \NumberFormatter::DECIMAL);
+        $numberFormatter = new \NumberFormatter($this->_currentLocale, \NumberFormatter::DECIMAL);
 
         if ($minimumDigits > -1) {
             $this->_setAttribute($numberFormatter, \NumberFormatter::MIN_FRACTION_DIGITS, $minimumDigits);
@@ -114,8 +181,9 @@ class localization extends \Locale {
      * @return string Returns the given value formatted according to current locale
      */
     public function formatSimpleCurrency($value=0, $minimumDigits=-1, $maximumDigits=-1) {
-        $numberFormatter = new \NumberFormatter(self::getDefault(), \NumberFormatter::CURRENCY);
-            if ($minimumDigits > -1) {
+        $numberFormatter = new \NumberFormatter($this->_currentLocale, \NumberFormatter::CURRENCY);
+
+        if ($minimumDigits > -1) {
             $this->_setAttribute($numberFormatter, \NumberFormatter::MIN_FRACTION_DIGITS, $minimumDigits);
         }
 
@@ -131,7 +199,7 @@ class localization extends \Locale {
      * @return string
      */
     public function getCurrencyISOCode() {
-        $numberFormatter = new \NumberFormatter(self::getDefault(), \NumberFormatter::CURRENCY);
+        $numberFormatter = new \NumberFormatter($this->_currentLocale, \NumberFormatter::CURRENCY);
         return $numberFormatter->getSymbol(\NumberFormatter::INTL_CURRENCY_SYMBOL);
     }
 
@@ -142,8 +210,13 @@ class localization extends \Locale {
      * @param int $timeConstant
      * @return \IntlDateFormatter Returns a \IntlDateFormatter object with given options
      */
-    private function _getDateObject($dateConstant=\IntlDateFormatter::MEDIUM, $timeConstant=\IntlDateFormatter::NONE) {
-        return new \intlDateFormatter(self::getDefault(), $dateConstant, $timeConstant);
+    private function _getDateObject($dateConstant=\IntlDateFormatter::MEDIUM, $timeConstant=\IntlDateFormatter::NONE, $timezone='') {
+        if (!empty($timezone) && $this->isValidTimeZone($timezone)) {
+            $timezoneId = $timezone;
+        } else {
+            $timezoneId = $this->timezoneId;
+        }
+        return \intlDateFormatter::create($this->_currentLocale, $dateConstant, $timeConstant, $timezoneId);
     }
 
     /**
@@ -156,12 +229,12 @@ class localization extends \Locale {
      * @param string $locale The locale in which we want the date
      * @return string The formatted date according to current locale settings
      */
-    public function formatSimpleDate($value=0, $type=\intlDateFormatter::MEDIUM, $locale='') {
+    public function formatSimpleDate($value=0, $timezone='', $type=\IntlDateFormatter::MEDIUM, $locale='') {
         if (empty($value)) {
             $value = time();
         }
 
-        $dateObject = $this->_getDateObject($type);
+        $dateObject = $this->_getDateObject($type, \IntlDateFormatter::NONE, $timezone);
         return $dateObject->format($value);
     }
 
@@ -170,27 +243,116 @@ class localization extends \Locale {
      *
      * @TODO Implement printing locale in another locale
      *
+     * @param string $timezone The timezone in which we want to print the time
      * @param int $value The UNIX timestamp we want to print. Defaults to current time
      * @param int $type The type of time we want to print
      * @param string $locale The locale in which we want the time
      * @return string The formatted time according to current locale settings
      */
-    public function formatSimpleTime($value=0, $type=\intlDateFormatter::MEDIUM, $locale='') {
+    public function formatSimpleTime($value=0, $timezone='', $type=\intlDateFormatter::MEDIUM) {
         if (empty($value)) {
             $value = time();
         }
 
-        $dateObject = $this->_getDateObject(\intlDateFormatter::NONE, $type);
+        $dateObject = $this->_getDateObject(\intlDateFormatter::NONE, $type, $timezone);
         return $dateObject->format($value);
     }
 
     /**
-     * @TODO Implement this
+     * Gets the possible timezone candidates and if only found one, instantiates a DateTimeZone object
      *
-     * @param unknown_type $locale
+     * @param string $region
+     */
+    private function _setTimezoneCandidates($region='') {
+        if (!empty($region)) {
+            $this->_timezoneCandidates = \DateTimeZone::listIdentifiers(\DateTimeZone::PER_COUNTRY, $region);
+            $this->setTimeZone();
+            if (!empty($this->_timezoneCandidates) && count($this->_timezoneCandidates) == 1) {
+                $this->setTimezone($this->_timezoneCandidates[0]);
+            }
+        }
+    }
+
+    /**
+     * Gets timezone candidates for the current locale
+     *
+     * @TODO Improve this
+     *
+     * @return array
+     */
+    public function getTimeZoneCandidates() {
+        return $this->_timezoneCandidates;
+    }
+
+    /**
+     * Verifies that the given timezone exists and sets the timezone to the selected timezone
+     *
+     * @TODO Verify that the given timezone exists
+     *
+     * @param string $timezoneName
      * @return string
      */
-    public function getTimezeoneOffset($locale='') {
-        return '';
+    public function setTimezone($timeZoneName='UTC') {
+        if (!$this->isValidTimeZone($timeZoneName)) {
+            $timeZoneName = 'UTC';
+        }
+        $this->timezone = new \DateTimeZone($timeZoneName);
+        $this->timezoneId = $this->timezone->getName();
+
+        return $this->timezoneId;
+    }
+
+    /**
+     * Checks whether a timezonename is valid or not
+     *
+     * Original idea from StackOverflow
+     * Modified a bit to adjust it to this class and PHPUnit tested it
+     *
+     * @link http://stackoverflow.com/a/5878722/396006
+     * @author http://stackoverflow.com/users/59120/cal
+     *
+     * @param string $timeZoneName
+     * @return boolean Returns true if timezone name is valid, false otherwise
+     */
+    public function isValidTimeZone($timeZoneName='') {
+        if (!is_string($timeZoneName)) {
+            $timeZoneName = '';
+        }
+
+        if (empty($this->_validTimeZones)) {
+            $tza = \DateTimeZone::listAbbreviations();
+            foreach ($tza as $zone) {
+                foreach ($zone as $item) {
+                    $this->_validTimeZones[$item['timezone_id']] = true;
+                }
+            }
+            unset($this->_validTimeZones[''], $tza, $zone, $item);
+        }
+        return isset($this->_validTimeZones[$timeZoneName]);
+    }
+
+    /**
+     * Gets the offset for the current timezone
+     *
+     * @param string $unit
+     * @return string
+     */
+    public function getTimezoneOffset($unit='seconds') {
+        $dateTimeObject = new \DateTime("now", $this->timezone);
+        $return = $dateTimeObject->getOffset();
+
+        switch ($unit) {
+            case 'minutes':
+                $return = $return / 60;
+                break;
+            case 'hours':
+                $return = $return / 60 / 60;
+                break;
+            case 'z':
+                // @TODO implement this (will return -0400 or +0100 as output)
+                break;
+        }
+
+        return (string)$return;
     }
 }
