@@ -58,10 +58,30 @@ class localizationTest extends \PHPUnit_Framework_TestCase {
     }
 
     /**
-     * Important in this test: test several valid and invalid browser HTTP_ACCEPT_LANGUAGE tags
+     * Data provider for test_autodetectLocale
+     *
+     * @return array
      */
-    public function test_autodetectLocale() {
-        $this->markTestIncomplete('Not completed yet');
+    public function provider_autodetectLocale() {
+        $mapValues[] = array('en,en-US,en-AU;q=0.8,fr;q=0.6,en-GB;q=0.4', 'en');
+        $mapValues[] = array('en-US,en-AU;q=0.8,fr;q=0.6,en-GB;q=0.4', 'en_US');
+        $mapValues[] = array('en-AU;q=0.8,fr;q=0.6,en-GB;q=0.4', 'en_AU');
+        $mapValues[] = array('en-AU;q=0.8,fr;q=0.9,en-GB;q=0.4', 'fr');
+        $mapValues[] = array('en-AU;q=0.3,fr;q=0.4,en-GB;q=0.4', 'en_GB');
+        $mapValues[] = array('en-AU;q=0.4,en-GB;q=0.4', 'en_AU');
+
+        return $mapValues;
+    }
+
+    /**
+     * Important in this test: test several valid and invalid browser HTTP_ACCEPT_LANGUAGE tags
+     *
+     * @dataProvider provider_autodetectLocale
+     */
+    public function test_autodetectLocale($input, $expected) {
+        $_SERVER['HTTP_ACCEPT_LANGUAGE'] = $input;
+        $result = $this->localization->autodetectLocale();
+        $this->assertEquals($result, $expected);
     }
 
     /**
@@ -193,6 +213,11 @@ class localizationTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals($result, $expected);
     }
 
+    /**
+     * Provider for test_isValidTimeZone
+     *
+     * @return array
+     */
     public function provider_isValidTimeZone() {
         $mapValues[] = array('America/Santiago', true);
         $mapValues[] = array('Europe/Amsterdam', true);
@@ -218,6 +243,28 @@ class localizationTest extends \PHPUnit_Framework_TestCase {
      */
     public function test_isValidTimeZone($timezone, $expected) {
         $result = $this->localization->isValidTimeZone($timezone);
+        $this->assertEquals($result, $expected);
+    }
+
+    /**
+     * Data provider for test_setTimezone
+     *
+     * @return array
+     */
+    public function provider_setTimezone() {
+        $mapValues[] = array('UTC', 'UTC');
+        $mapValues[] = array('', 'UTC');
+        $mapValues[] = array('America/Santiago', 'America/Santiago');
+        $mapValues[] = array('Europe/London', 'Europe/London');
+
+        return $mapValues;
+    }
+
+    /**
+     * @dataProvider provider_setTimezone
+     */
+    public function test_setTimezone($timezoneName, $expected) {
+        $result = $this->localization->setTimezone($timezoneName);
         $this->assertEquals($result, $expected);
     }
 
