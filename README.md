@@ -42,7 +42,7 @@ This class has support for Composer install. Just add the following section to y
         }
     ],
     "require": {
-        "unreal4u/composer": "0.3.*@dev"
+        "unreal4u/localization": "0.3.*@dev"
     }
 }
 </pre>
