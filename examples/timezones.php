@@ -1,7 +1,7 @@
 <?php
 
-include('../localization.php');
-$locale = new \u4u\localization();
+include('../src/unreal4u/localization.php');
+$locale = new \unreal4u\localization();
 
 $testLocales = array('pt-BR', 'hi_IN', 'es-CL', 'es-BO', 'pt-PT', 'ko-KR', 'nl-NL', 'jp-JP', 'nl-BE', 'de-DE', 'en-CA', 'en-GB', '');
 $locale->sendHeaders();

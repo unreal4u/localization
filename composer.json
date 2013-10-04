@@ -1,3 +1,17 @@
 {
-    "name": "unreal4u/localization"
+    "name": "unreal4u/localization",
+    "description": "This class sets almost all locale settings and makes your life easier by doing so",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Camilo Sperberg",
+            "email": "me@unreal4u.com"
+        }
+    ],
+    "require": {
+
+    },
+    "autoload": {
+        "psr-0": "src/"
+    }
 }

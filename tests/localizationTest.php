@@ -1,5 +1,5 @@
 <?php
-require_once '../localization.php';
+require_once '../src/unreal4u/localization.php';
 require_once 'PHPUnit/Framework/TestCase.php';
 
 /**
@@ -16,7 +16,7 @@ class localizationTest extends \PHPUnit_Framework_TestCase {
      */
     protected function setUp() {
         parent::setUp();
-        $this->localization = new u4u\localization();
+        $this->localization = new unreal4u\localization();
     }
 
     /**
