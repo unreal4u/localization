@@ -9,6 +9,7 @@ namespace unreal4u;
  * this case, it will setup a list with candidates for you to choose from
  *
  * @author unreal4u / Camilo Sperberg - http://unreal4u.com/
+ * @license MIT
  */
 class localization {
 
