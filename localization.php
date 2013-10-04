@@ -1,5 +1,5 @@
 <?php
-namespace u4u;
+namespace \unreal4u;
 
 /**
  * Class that deals with localization settings

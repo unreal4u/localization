@@ -1,6 +1,6 @@
 <?php
 
-include('../localization.class.php');
+include('../localization.php');
 $locale = new \u4u\localization();
 
 $testLocales = array('pt-BR', 'hi_IN', 'es-CL', 'es-BO', 'pt-PT', 'ko-KR', 'nl-NL', 'jp-JP', 'nl-BE', 'de-DE', 'en-CA', 'en-GB', '');

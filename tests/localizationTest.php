@@ -1,5 +1,5 @@
 <?php
-require_once '../localization.class.php';
+require_once '../localization.php';
 require_once 'PHPUnit/Framework/TestCase.php';
 
 /**
