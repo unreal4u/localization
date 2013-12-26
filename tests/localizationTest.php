@@ -219,7 +219,33 @@ class localizationTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals($result, $expected);
     }
 
-    public function test_getTimezoneOffset() {
-        $this->markTestIncomplete('Not completed yet');
+    public function provider_getTimezoneOffset() {
+        $mapValues[] = array('hi_IN', 'hours', 5.5);
+        $mapValues[] = array('hi_IN', 'z', '+0530');
+        $mapValues[] = array('es_BO', 'hours', -4);
+        $mapValues[] = array('es_BO', 'z', '-0400');
+        $mapValues[] = array('en_GB', 'hours', 0);
+        $mapValues[] = array('en_GB', 'z', '+0000');
+        $mapValues[] = array('nl_NL', 'hours', 1);
+        $mapValues[] = array('nl_NL', 'z', '+0100');
+        $mapValues[] = array('jp_JP', 'minutes', 540);
+        $mapValues[] = array('jp_JP', 'seconds', 32400);
+
+        return $mapValues;
+    }
+
+    /**
+     * Tests getTimezoneOffset
+     *
+     * @dataProvider provider_getTimezoneOffset
+     * @param unknown $locale
+     * @param unknown $unit
+     * @param unknown $expected
+     */
+    public function test_getTimezoneOffset($locale, $unit, $expected) {
+        $this->localization->setDefault($locale);
+        $result = $this->localization->getTimezoneOffset($unit);
+
+        $this->assertEquals($result, $expected);
     }
 }

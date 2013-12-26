@@ -18,7 +18,9 @@ namespace unreal4u;
  * this case, it will setup a list with candidates for you to choose from
  *
  * @author "unreal4u / Camilo Sperberg" <me@unreal4u.com>
- * @license MIT
+ * @copyright 2010 - 2014 Camilo Sperberg
+ * @version 0.3.3
+ * @license BSD License
  */
 class localization {
 
@@ -374,7 +376,11 @@ class localization {
                 $return = $return / 60 / 60;
                 break;
             case 'z':
-                // @TODO implement this (will return -0400 or +0100 as output)
+                $sign = '+';
+                if ($return < 0) {
+                    $sign = '-';
+                }
+                $return = $sign.str_pad(gmdate("Hi", abs($return)), 4, '0', STR_PAD_LEFT);
                 break;
         }
 
