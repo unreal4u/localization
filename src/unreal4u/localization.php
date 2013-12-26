@@ -3,9 +3,9 @@
  * Main class that defines the Localization class
  *
  * @author unreal4u
- * @link tag in file comment
- * @package tag in file
- * @category tag in file
+ * @link https://github.com/unreal4u/localization
+ * @package localization
+ * @category mainClass
  */
 
 namespace unreal4u;
@@ -21,6 +21,12 @@ namespace unreal4u;
  * @license MIT
  */
 class localization {
+
+    /**
+     * The version of this class
+     * @var string
+     */
+    private $classVersion = '0.3.3';
 
     /**
      * Saves the current timezone settings
@@ -68,6 +74,15 @@ class localization {
             throw new \Exception('You must have PHP 5.3.0+ in order to use this class');
         }
         $this->setDefault($setLocale);
+    }
+
+    /**
+     * Returns a string with basic information of this class
+     *
+     * @return string
+     */
+    public function __toString() {
+        return basename(__FILE__).' v'.$this->classVersion.' by Camilo Sperberg - http://unreal4u.com/';
     }
 
     /**
