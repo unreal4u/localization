@@ -1,4 +1,13 @@
 <?php
+/**
+ * Main class that defines the Localization class
+ *
+ * @author unreal4u
+ * @link tag in file comment
+ * @package tag in file
+ * @category tag in file
+ */
+
 namespace unreal4u;
 
 /**
@@ -8,7 +17,7 @@ namespace unreal4u;
  * caveat of this class however is that it doesn't know how to handle with countries that have more than 1 timezone. In
  * this case, it will setup a list with candidates for you to choose from
  *
- * @author unreal4u / Camilo Sperberg - http://unreal4u.com/
+ * @author "unreal4u / Camilo Sperberg" <me@unreal4u.com>
  * @license MIT
  */
 class localization {
