@@ -19,7 +19,7 @@ namespace unreal4u;
  *
  * @author "unreal4u / Camilo Sperberg" <me@unreal4u.com>
  * @copyright 2010 - 2014 Camilo Sperberg
- * @version 0.3.3
+ * @version 0.3.4
  * @license BSD License
  */
 class localization {
@@ -28,7 +28,7 @@ class localization {
      * The version of this class
      * @var string
      */
-    private $classVersion = '0.3.3';
+    private $classVersion = '0.3.4';
 
     /**
      * Saves the current timezone settings
