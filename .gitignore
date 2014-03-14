@@ -1,6 +1,5 @@
 .buildpath
 .settings
 .project
-composer.lock
 tests/report/*
 /vendor/
