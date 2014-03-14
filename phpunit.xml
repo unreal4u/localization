@@ -1,0 +1,9 @@
+<phpunit colors="true" bootstrap="tests/bootstrap.php">
+        <testsuite name="localization">
+                <directory>./tests/</directory>
+        </testsuite>
+
+        <logging>
+                <log type="coverage-html" target="tests/report/" charset="UTF-8" yui="true" highlight="true"/>
+        </logging>
+</phpunit>

@@ -1,6 +1,6 @@
 <?php
-require_once '../src/unreal4u/localization.php';
-require_once 'PHPUnit/Framework/TestCase.php';
+
+require_once 'src/unreal4u/localization.php';
 
 /**
  * pid test case.
