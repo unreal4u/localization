@@ -67,6 +67,7 @@ Version History
 * 0.3.5:
     * Deleted check for inline PHP >= 5.3
     * Class is now tested with Travis-CI
+    * Updated PHPUnit to v4.0
 
 Contact the author
 -------
