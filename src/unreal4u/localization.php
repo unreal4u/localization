@@ -19,7 +19,7 @@ namespace unreal4u;
  *
  * @author "unreal4u / Camilo Sperberg" <me@unreal4u.com>
  * @copyright 2010 - 2014 Camilo Sperberg
- * @version 0.3.4
+ * @version 0.3.5
  * @license BSD License
  */
 class localization {
@@ -28,7 +28,7 @@ class localization {
      * The version of this class
      * @var string
      */
-    private $classVersion = '0.3.4';
+    private $classVersion = '0.3.5';
 
     /**
      * Saves the current timezone settings
@@ -72,9 +72,6 @@ class localization {
      * @param string $setLocale
      */
     public function __construct($setLocale='') {
-        if (version_compare(PHP_VERSION, '5.3.0', '<')) {
-            throw new \Exception('You must have PHP 5.3.0+ in order to use this class');
-        }
         $this->setDefault($setLocale);
     }
 

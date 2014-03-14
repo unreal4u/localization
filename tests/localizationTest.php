@@ -49,7 +49,7 @@ class localizationTest extends \PHPUnit_Framework_TestCase {
         if ($result === true) {
             $headers = xdebug_get_headers();
             $this->assertNotEmpty($headers);
-            $this->assertEquals($headers[0], 'Content-type: '.$contentType.'; charset='.$charset);
+            $this->assertEquals('Content-type: '.$contentType.'; charset='.$charset, $headers[0]);
         } else {
             $this->assertFalse($result);
         }
@@ -102,7 +102,7 @@ class localizationTest extends \PHPUnit_Framework_TestCase {
         $this->localization->setDefault($locale);
         $result = $this->localization->formatSimpleNumber($value, $minimumDigits, $maximumDigits);
 
-        $this->assertEquals($result, $expected);
+        $this->assertEquals($expected, $result);
     }
 
     /**
@@ -157,7 +157,7 @@ class localizationTest extends \PHPUnit_Framework_TestCase {
         $this->localization->setDefault($locale);
         $result = $this->localization->formatSimpleCurrency($value, $minimumDigits, $maximumDigits);
 
-        $this->assertEquals($result, $expected);
+        $this->assertEquals($expected, $result);
     }
 
     public function test_formatSimpleDate() {
@@ -188,7 +188,7 @@ class localizationTest extends \PHPUnit_Framework_TestCase {
         $this->localization->setDefault($locale);
         $result = $this->localization->getCurrencyISOCode();
 
-        $this->assertEquals($result, $expected);
+        $this->assertEquals($expected, $result);
     }
 
     public function provider_isValidTimeZone() {
@@ -216,7 +216,28 @@ class localizationTest extends \PHPUnit_Framework_TestCase {
      */
     public function test_isValidTimeZone($timezone, $expected) {
         $result = $this->localization->isValidTimeZone($timezone);
-        $this->assertEquals($result, $expected);
+        $this->assertEquals($expected, $result);
+    }
+
+    public function provider_setTimezone() {
+        $mapValues[] = array('UTC', 'UTC');
+        $mapValues[] = array('CET', 'Europe/Berlin');
+        $mapValues[] = array('America/Santiago', 'America/Santiago');
+        $mapValues[] = array('XXXXXX-invalid-time-zone', 'UTC');
+
+        return $mapValues;
+    }
+
+    /**
+     * Tests setTimezone
+     *
+     * @dataProvider provider_setTimezone
+     * @param unknown $timezoneName
+     * @param unknown $expected
+     */
+    public function test_setTimezone($timezoneName, $expected) {
+        $result = $this->localization->setTimezone($timezoneName);
+        $this->assertEquals($expected, $result);
     }
 
     public function provider_getTimezoneOffset() {
@@ -246,6 +267,6 @@ class localizationTest extends \PHPUnit_Framework_TestCase {
         $this->localization->setDefault($locale);
         $result = $this->localization->getTimezoneOffset($unit);
 
-        $this->assertEquals($result, $expected);
+        $this->assertEquals($expected, $result);
     }
 }

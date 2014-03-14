@@ -1,9 +1,16 @@
 <phpunit colors="true" bootstrap="tests/bootstrap.php">
-        <testsuite name="localization">
-                <directory>./tests/</directory>
-        </testsuite>
+    <filter>
+        <blacklist>
+            <directory suffix=".php">./vendor</directory>
+            <directory suffix=".php">./tests</directory>
+        </blacklist>
+    </filter>
 
-        <logging>
-                <log type="coverage-html" target="tests/report/" charset="UTF-8" yui="true" highlight="true"/>
-        </logging>
+    <testsuite name="localization">
+        <directory>./tests/</directory>
+    </testsuite>
+
+    <logging>
+        <log type="coverage-html" target="tests/report/" charset="UTF-8" yui="true" highlight="true" />
+    </logging>
 </phpunit>

@@ -52,7 +52,6 @@ $localization = new unreal4u\localization();
 TODO list
 ----------
 
-* Check compatibility with PSR-0
 * Pass PHP_CodeSniffer
 * Implement more tests
 * Print percentage
@@ -65,6 +64,9 @@ Version History
     * Original class
 * 0.3 :
     * Composer and PSR-0 compatibility
+* 0.3.5:
+    * Deleted check for inline PHP >= 5.3
+    * Class is now tested with Travis-CI
 
 Contact the author
 -------
