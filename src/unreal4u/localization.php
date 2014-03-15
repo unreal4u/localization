@@ -19,7 +19,7 @@ namespace unreal4u;
  *
  * @author "unreal4u / Camilo Sperberg" <me@unreal4u.com>
  * @copyright 2010 - 2014 Camilo Sperberg
- * @version 0.3.5
+ * @version 0.4.0
  * @license BSD License
  */
 class localization {
@@ -28,7 +28,7 @@ class localization {
      * The version of this class
      * @var string
      */
-    private $classVersion = '0.3.5';
+    private $classVersion = '0.4.0';
 
     /**
      * Saves the current timezone settings
@@ -161,58 +161,29 @@ class localization {
     }
 
     /**
-     * Can set special attributes to the given numberFormatter
-     *
-     * @param \NumberFormatter $object
-     * @param int $attribute The attribute to set
-     * @param mixed $value
-     * @return boolean
-     */
-    private function _setAttribute(\NumberFormatter $object, $attribute, $value) {
-        $object->setAttribute($attribute, $value);
-        return true;
-    }
-
-    /**
      * Applies simple rules to print a number
      *
+     * @link http://www.php.net/manual/en/class.numberformatter.php#intl.numberformatter-constants.unumberformatstyle
+     *
      * @param float $value
+     * @param constant $type One of the accepted constants for numfmt_create (See link)
      * @param int $minimumDigits The minimum significant digits. Defaults to -1, which equals locale default
      * @param int $maximumDigits The maximum significant digits. Defaults to -1, which equals locale default
      * @return string Returns the given value formatted according to current locale
      */
-    public function formatSimpleNumber($value=0, $minimumDigits=-1, $maximumDigits=-1) {
-        $numberFormatter = new \NumberFormatter($this->_currentLocale, \NumberFormatter::DECIMAL);
+    public function formatNumber($value=0, $type=0, $minimumDigits=-1, $maximumDigits=-1) {
+        if (empty($type)) {
+            $type = \NumberFormatter::DECIMAL;
+        }
+
+        $numberFormatter = new \NumberFormatter($this->_currentLocale, $type);
 
         if ($minimumDigits > -1) {
-            $this->_setAttribute($numberFormatter, \NumberFormatter::MIN_FRACTION_DIGITS, $minimumDigits);
+            $numberFormatter->setAttribute(\NumberFormatter::MIN_FRACTION_DIGITS, $minimumDigits);
         }
 
         if ($maximumDigits > -1) {
-            $this->_setAttribute($numberFormatter, \NumberFormatter::MAX_FRACTION_DIGITS, $maximumDigits);
-        }
-        return $numberFormatter->format($value);
-    }
-
-    /**
-     * Applies simple rules to print a currency
-     *
-     * This will also print the currency symbol
-     *
-     * @param string $value Returns the given value formatted according to current locale
-     * @param int $minimumDigits The minimum significant digits. Defaults to -1, which equals locale default
-     * @param int $maximumDigits The maximum significant digits. Defaults to -1, which equals locale default
-     * @return string Returns the given value formatted according to current locale
-     */
-    public function formatSimpleCurrency($value=0, $minimumDigits=-1, $maximumDigits=-1) {
-        $numberFormatter = new \NumberFormatter($this->_currentLocale, \NumberFormatter::CURRENCY);
-
-        if ($minimumDigits > -1) {
-            $this->_setAttribute($numberFormatter, \NumberFormatter::MIN_FRACTION_DIGITS, $minimumDigits);
-        }
-
-        if ($maximumDigits > -1) {
-            $this->_setAttribute($numberFormatter, \NumberFormatter::MAX_FRACTION_DIGITS, $maximumDigits);
+            $numberFormatter->setAttribute(\NumberFormatter::MAX_FRACTION_DIGITS, $maximumDigits);
         }
         return $numberFormatter->format($value);
     }

@@ -1,5 +1,6 @@
 <?php
 
+include('../vendor/autoload.php');
 include('../src/unreal4u/localization.php');
 $locale = new \unreal4u\localization();
 

@@ -23,8 +23,8 @@ foreach ($testLocales as $testLocale) {
     printf('Time (local): <strong>%s</strong><br />', $locale->formatSimpleTime());
 
     foreach ($testNumbers as $testNumber) {
-        printf('Number: <strong>%s</strong><br />', $locale->formatSimpleNumber($testNumber));
-        printf('Currency: <strong>%s</strong><br />', $locale->formatSimpleCurrency($testNumber));
+        printf('Number: <strong>%s</strong><br />', $locale->formatNumber($testNumber));
+        printf('Currency: <strong>%s</strong><br />', $locale->formatNumber($testNumber, \Numberformatter::CURRENCY));
         printf('Currency Symbol: <strong>%s</strong><br />', $locale->getCurrencyISOCode());
         printf('---<br />');
     }

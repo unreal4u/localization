@@ -1,5 +1,5 @@
 .buildpath
 .settings
 .project
-tests/report/*
+tests/report/
 /vendor/
