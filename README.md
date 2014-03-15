@@ -1,3 +1,8 @@
+[![Latest Stable Version](https://poser.pugx.org/unreal4u/localization/v/stable.png)](https://packagist.org/packages/unreal4u/localization)
+[![Build Status](https://travis-ci.org/unreal4u/localization.png?branch=master)](https://travis-ci.org/unreal4u/localization)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/unreal4u/localization/badges/quality-score.png?s=5f6fa877aaa981d9a4e43aec068334c667c32815)](https://scrutinizer-ci.com/g/unreal4u/localization/)
+[![License](https://poser.pugx.org/unreal4u/localization/license.png)](https://packagist.org/packages/unreal4u/localization)
+
 localization.class.php
 ======
 
@@ -22,7 +27,7 @@ Basic usage
 <pre>include('src/unreal4u/localization.class.php');
 $locale = new unreal4u\localization();
 $locale->autodetectLocale();
-$locale->formatSimpleCurrency(3.1415);
+$locale->formatNumber(3.1415);
 </pre>
 
 * Congratulations! You have just printed 3.1415 formatted according to your browser locale settings!
@@ -64,10 +69,11 @@ Version History
     * Original class
 * 0.3 :
     * Composer and PSR-0 compatibility
-* 0.3.5:
+* 0.4.0:
     * Deleted check for inline PHP >= 5.3
     * Class is now tested with Travis-CI
     * Updated PHPUnit to v4.0
+    * Deleted method formatSimpleNumber and formatSimpleCurrency in favor of formatNumber
 
 Contact the author
 -------
