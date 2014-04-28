@@ -314,16 +314,14 @@ class localization {
             $timeZoneName = '';
         }
 
-        if (empty($this->_validTimeZones)) {
-            $tza = \DateTimeZone::listAbbreviations();
-            foreach ($tza as $zone) {
-                foreach ($zone as $item) {
-                    $this->_validTimeZones[$item['timezone_id']] = true;
-                }
-            }
-            unset($this->_validTimeZones[''], $tza, $zone, $item);
+        try {
+            $tmp = new \DateTimeZone($timeZoneName);
+            return true;
+        } catch (\Exception $e) {
+            // Do nothing
         }
-        return isset($this->_validTimeZones[$timeZoneName]);
+
+        return false;
     }
 
     /**
