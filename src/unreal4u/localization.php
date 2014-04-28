@@ -43,6 +43,12 @@ class localization {
     public $timezoneId = 'UTC';
 
     /**
+     * Indicated whether the timezone is in DST or not
+     * @var boolean
+     */
+    public $timezoneInDST = false;
+
+    /**
      * Contains the most probable language associated with the selected locale (2 letter code)
      * @var string
      */
@@ -291,20 +297,17 @@ class localization {
         if (!$this->isValidTimeZone($timeZoneName)) {
             $timeZoneName = 'UTC';
         }
+
         $this->timezone = new \DateTimeZone($timeZoneName);
         $this->timezoneId = $this->timezone->getName();
+        $transitions = $this->timezone->getTransitions();
+        $this->timezoneInDST = $transitions[0]['isdst'];
 
         return $this->timezoneId;
     }
 
     /**
      * Checks whether a timezonename is valid or not
-     *
-     * Original idea from StackOverflow
-     * Modified a bit to adjust it to this class and PHPUnit tested it
-     *
-     * @link http://stackoverflow.com/a/5878722/396006
-     * @author http://stackoverflow.com/users/59120/cal
      *
      * @param string $timeZoneName
      * @return boolean Returns true if timezone name is valid, false otherwise
@@ -315,7 +318,10 @@ class localization {
         }
 
         try {
-            $tmp = new \DateTimeZone($timeZoneName);
+            $tz = new \DateTimeZone($timeZoneName);
+            $transitions = $tz->getTransitions();
+            #var_dump('the timezone:::: ', $timeZoneName);
+            #var_dump($transitions);
             return true;
         } catch (\Exception $e) {
             // Do nothing
@@ -330,8 +336,8 @@ class localization {
      * @param string $unit
      * @return string
      */
-    public function getTimezoneOffset($unit='seconds') {
-        $dateTimeObject = new \DateTime("now", $this->timezone);
+    public function getTimezoneOffset($unit='seconds', $when='now') {
+        $dateTimeObject = new \DateTime($when, $this->timezone);
         $return = $dateTimeObject->getOffset();
 
         switch ($unit) {

@@ -252,16 +252,18 @@ class localizationTest extends \PHPUnit_Framework_TestCase {
     }
 
     public function provider_getTimezoneOffset() {
-        $mapValues[] = array('hi_IN', 'hours', 5.5);
-        $mapValues[] = array('hi_IN', 'z', '+0530');
-        $mapValues[] = array('es_BO', 'hours', -4);
-        $mapValues[] = array('es_BO', 'z', '-0400');
-        $mapValues[] = array('en_GB', 'hours', 0);
-        $mapValues[] = array('en_GB', 'z', '+0000');
-        $mapValues[] = array('nl_NL', 'hours', 1);
-        $mapValues[] = array('nl_NL', 'z', '+0100');
-        $mapValues[] = array('jp_JP', 'minutes', 540);
-        $mapValues[] = array('jp_JP', 'seconds', 32400);
+        $mapValues[] = array('hi_IN', 'hours', '2014/01/15', 5.5);
+        $mapValues[] = array('hi_IN', 'z', '2014/01/15', '+0530');
+        $mapValues[] = array('es_BO', 'hours', '2014/01/15', -4);
+        $mapValues[] = array('es_BO', 'z', '2014/01/15', '-0400');
+        $mapValues[] = array('en_GB', 'hours', '2014/01/15', 0);
+        $mapValues[] = array('en_GB', 'z', '2014/01/15', '+0000');
+        $mapValues[] = array('nl_NL', 'hours', '2014/01/15', 1);
+        $mapValues[] = array('nl_NL', 'z', '2014/01/15', '+0100');
+        $mapValues[] = array('nl_NL', 'hours', '2014/06/15', 2);
+        $mapValues[] = array('nl_NL', 'z', '2014/06/15', '+0200');
+        $mapValues[] = array('jp_JP', 'minutes', '2014/01/15', 540);
+        $mapValues[] = array('jp_JP', 'seconds', '2014/01/15', 32400);
 
         return $mapValues;
     }
@@ -274,9 +276,9 @@ class localizationTest extends \PHPUnit_Framework_TestCase {
      * @param unknown $unit
      * @param unknown $expected
      */
-    public function test_getTimezoneOffset($locale, $unit, $expected) {
+    public function test_getTimezoneOffset($locale, $unit, $when, $expected) {
         $this->localization->setDefault($locale);
-        $result = $this->localization->getTimezoneOffset($unit);
+        $result = $this->localization->getTimezoneOffset($unit, $when);
 
         $this->assertEquals($expected, $result);
     }
