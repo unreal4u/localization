@@ -19,7 +19,7 @@ namespace unreal4u;
  *
  * @author "unreal4u / Camilo Sperberg" <me@unreal4u.com>
  * @copyright 2010 - 2014 Camilo Sperberg
- * @version 0.4.0
+ * @version 0.4.1
  * @license BSD License
  */
 class localization {
@@ -28,7 +28,7 @@ class localization {
      * The version of this class
      * @var string
      */
-    private $classVersion = '0.4.0';
+    private $classVersion = '0.4.1';
 
     /**
      * Saves the current timezone settings
@@ -318,22 +318,19 @@ class localization {
         }
 
         try {
-            $tz = new \DateTimeZone($timeZoneName);
-            $transitions = $tz->getTransitions();
-            #var_dump('the timezone:::: ', $timeZoneName);
-            #var_dump($transitions);
+            $tmp = new \DateTimeZone($timeZoneName);
+            // @TODO Return a timezone instead of true/false?
             return true;
         } catch (\Exception $e) {
-            // Do nothing
+            return false;
         }
-
-        return false;
     }
 
     /**
      * Gets the offset for the current timezone
      *
      * @param string $unit
+     * @param string $when
      * @return string
      */
     public function getTimezoneOffset($unit='seconds', $when='now') {
