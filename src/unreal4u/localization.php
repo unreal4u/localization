@@ -318,7 +318,7 @@ class localization {
         }
 
         try {
-            $tmp = new \DateTimeZone($timeZoneName);
+            new \DateTimeZone($timeZoneName);
             // @TODO Return a timezone instead of true/false?
             return true;
         } catch (\Exception $e) {
