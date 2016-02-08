@@ -1,5 +1,7 @@
 .buildpath
 .settings
 .project
+.idea
 tests/report/
 /vendor/
+.vagrant/

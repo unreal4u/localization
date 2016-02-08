@@ -5,7 +5,8 @@ require_once 'src/unreal4u/localization.php';
 /**
  * pid test case.
  */
-class localizationTest extends \PHPUnit_Framework_TestCase {
+class localizationTest extends \PHPUnit_Framework_TestCase
+{
     /**
      * @var localization
      */
@@ -14,7 +15,8 @@ class localizationTest extends \PHPUnit_Framework_TestCase {
     /**
      * Prepares the environment before running a test.
      */
-    protected function setUp() {
+    protected function setUp()
+    {
         parent::setUp();
         $this->localization = new unreal4u\localization();
     }
@@ -22,7 +24,8 @@ class localizationTest extends \PHPUnit_Framework_TestCase {
     /**
      * Cleans up the environment after running a test.
      */
-    protected function tearDown() {
+    protected function tearDown()
+    {
         $this->localization = null;
         parent::tearDown();
     }
@@ -30,7 +33,8 @@ class localizationTest extends \PHPUnit_Framework_TestCase {
     /**
      * Tests magic toString method
      */
-    public function test___toString() {
+    public function test___toString()
+    {
         $output = sprintf($this->localization);
         $this->assertStringStartsWith('localization', $output);
     }
@@ -40,7 +44,8 @@ class localizationTest extends \PHPUnit_Framework_TestCase {
      *
      * @return array
      */
-    public function provider_sendHeaders() {
+    public function provider_sendHeaders()
+    {
         $mapValues[] = array('UTF-8', 'text/html', true);
         $mapValues[] = array('ISO-8859-1', 'text/xml', true);
 
@@ -52,13 +57,12 @@ class localizationTest extends \PHPUnit_Framework_TestCase {
      *
      * @dataProvider provider_sendHeaders
      */
-    public function test_sendHeaders($charset, $contentType, $expected) {
+    public function test_sendHeaders($charset, $contentType, $expected)
+    {
         $result = $this->localization->sendHeaders($charset, $contentType);
 
-        if ($result === true) {
-            $headers = xdebug_get_headers();
-            $this->assertNotEmpty($headers);
-            $this->assertEquals('Content-type: '.$contentType.'; charset='.$charset, $headers[0]);
+        if ($result !== '') {
+            $this->assertEquals('Content-type: ' . $contentType . '; charset=' . $charset, $result);
         } else {
             $this->assertFalse($result);
         }
@@ -67,7 +71,8 @@ class localizationTest extends \PHPUnit_Framework_TestCase {
     /**
      * Important in this test: test several valid and invalid browser HTTP_ACCEPT_LANGUAGE tags
      */
-    public function test_autodetectLocale() {
+    public function test_autodetectLocale()
+    {
         $this->markTestIncomplete('Not completed yet');
     }
 
@@ -76,31 +81,32 @@ class localizationTest extends \PHPUnit_Framework_TestCase {
      *
      * @return array
      */
-    public function provider_formatSimpleNumber() {
+    public function provider_formatSimpleNumber()
+    {
         $mapValues[] = array('pt-BR', \Numberformatter::DECIMAL, 0, -1, -1, '0');
-        $mapValues[] = array('pt-BR', \Numberformatter::DECIMAL, 0,  2, -1, '0,00');
-        $mapValues[] = array('pt-BR', \Numberformatter::DECIMAL, 0,  2,  6, '0,00');
-        $mapValues[] = array('pt-BR', \Numberformatter::DECIMAL, 1234.5678,  -1, -1, '1.234,568');
-        $mapValues[] = array('pt-BR', \Numberformatter::DECIMAL, 1234.5678,  -1, 4,  '1.234,5678');
-        $mapValues[] = array('pt-BR', \Numberformatter::DECIMAL, 1234.5678,  -1, 6,  '1.234,5678');
-        $mapValues[] = array('pt-BR', \Numberformatter::DECIMAL, -1234.5678, -1, 2,  '-1.234,57');
+        $mapValues[] = array('pt-BR', \Numberformatter::DECIMAL, 0, 2, -1, '0,00');
+        $mapValues[] = array('pt-BR', \Numberformatter::DECIMAL, 0, 2, 6, '0,00');
+        $mapValues[] = array('pt-BR', \Numberformatter::DECIMAL, 1234.5678, -1, -1, '1.234,568');
+        $mapValues[] = array('pt-BR', \Numberformatter::DECIMAL, 1234.5678, -1, 4, '1.234,5678');
+        $mapValues[] = array('pt-BR', \Numberformatter::DECIMAL, 1234.5678, -1, 6, '1.234,5678');
+        $mapValues[] = array('pt-BR', \Numberformatter::DECIMAL, -1234.5678, -1, 2, '-1.234,57');
 
         $mapValues[] = array('pt-PT', \Numberformatter::DECIMAL, 0, -1, -1, '0');
-        $mapValues[] = array('pt-PT', \Numberformatter::DECIMAL, 0,  2, -1, '0,00');
-        $mapValues[] = array('pt-PT', \Numberformatter::DECIMAL, 0,  2,  6, '0,00');
-        $mapValues[] = array('pt-PT', \Numberformatter::DECIMAL, 1234.5678,  -1, -1, '1 234,568');
-        $mapValues[] = array('pt-PT', \Numberformatter::DECIMAL, 1234.5678,  -1, 4,  '1 234,5678');
-        $mapValues[] = array('pt-PT', \Numberformatter::DECIMAL, 1234.5678,  -1, 6,  '1 234,5678');
-        $mapValues[] = array('pt-PT', \Numberformatter::DECIMAL, -1234.5678, -1, 2,  '-1 234,57');
+        $mapValues[] = array('pt-PT', \Numberformatter::DECIMAL, 0, 2, -1, '0,00');
+        $mapValues[] = array('pt-PT', \Numberformatter::DECIMAL, 0, 2, 6, '0,00');
+        $mapValues[] = array('pt-PT', \Numberformatter::DECIMAL, 1234.5678, -1, -1, '1 234,568');
+        $mapValues[] = array('pt-PT', \Numberformatter::DECIMAL, 1234.5678, -1, 4, '1 234,5678');
+        $mapValues[] = array('pt-PT', \Numberformatter::DECIMAL, 1234.5678, -1, 6, '1 234,5678');
+        $mapValues[] = array('pt-PT', \Numberformatter::DECIMAL, -1234.5678, -1, 2, '-1 234,57');
 
         $mapValues[] = array('ko-KR', \Numberformatter::DECIMAL, 0, -1, -1, '0');
-        $mapValues[] = array('ko-KR', \Numberformatter::DECIMAL, 0,  2, -1, '0.00');
-        $mapValues[] = array('ko-KR', \Numberformatter::DECIMAL, 0,  2,  6, '0.00');
-        $mapValues[] = array('ko-KR', \Numberformatter::DECIMAL, 1234.5678,  -1, -1, '1,234.568');
-        $mapValues[] = array('ko-KR', \Numberformatter::DECIMAL, 1234.5678,  -1, 4,  '1,234.5678');
-        $mapValues[] = array('ko-KR', \Numberformatter::DECIMAL, 1234.5678,  -1, 6,  '1,234.5678');
-        $mapValues[] = array('ko-KR', \Numberformatter::DECIMAL, -1234.5678, -1, 2,  '-1,234.57');
-        $mapValues[] = array('ko-KR', null, -1234.5678, -1, 2,  '-1,234.57');
+        $mapValues[] = array('ko-KR', \Numberformatter::DECIMAL, 0, 2, -1, '0.00');
+        $mapValues[] = array('ko-KR', \Numberformatter::DECIMAL, 0, 2, 6, '0.00');
+        $mapValues[] = array('ko-KR', \Numberformatter::DECIMAL, 1234.5678, -1, -1, '1,234.568');
+        $mapValues[] = array('ko-KR', \Numberformatter::DECIMAL, 1234.5678, -1, 4, '1,234.5678');
+        $mapValues[] = array('ko-KR', \Numberformatter::DECIMAL, 1234.5678, -1, 6, '1,234.5678');
+        $mapValues[] = array('ko-KR', \Numberformatter::DECIMAL, -1234.5678, -1, 2, '-1,234.57');
+        $mapValues[] = array('ko-KR', null, -1234.5678, -1, 2, '-1,234.57');
 
 
         return $mapValues;
@@ -109,7 +115,8 @@ class localizationTest extends \PHPUnit_Framework_TestCase {
     /**
      * @dataProvider provider_formatSimpleNumber
      */
-    public function test_formatSimpleNumber($locale, $type, $value, $minimumDigits, $maximumDigits, $expected) {
+    public function test_formatSimpleNumber($locale, $type, $value, $minimumDigits, $maximumDigits, $expected)
+    {
         $this->localization->setDefault($locale);
         $result = $this->localization->formatNumber($value, $type, $minimumDigits, $maximumDigits);
 
@@ -119,44 +126,45 @@ class localizationTest extends \PHPUnit_Framework_TestCase {
     /**
      * Data provider for all currency related functions
      */
-    public function provider_formatSimpleCurrency() {
+    public function provider_formatSimpleCurrency()
+    {
         $mapValues[] = array('pt-BR', \Numberformatter::CURRENCY, 0, -1, -1, 'R$0,00');
-        $mapValues[] = array('pt-BR', \Numberformatter::CURRENCY, 0,  2, -1, 'R$0,00');
-        $mapValues[] = array('pt-BR', \Numberformatter::CURRENCY, 0,  2,  6, 'R$0,00');
-        $mapValues[] = array('pt-BR', \Numberformatter::CURRENCY, 1234.5678,  -1, -1, 'R$1.234,57');
-        $mapValues[] = array('pt-BR', \Numberformatter::CURRENCY, 1234.5678,  -1, 4,  'R$1.234,5678');
-        $mapValues[] = array('pt-BR', \Numberformatter::CURRENCY, 1234.5678,  -1, 6,  'R$1.234,5678');
-        $mapValues[] = array('pt-BR', \Numberformatter::CURRENCY, -1234.5678, -1, 2,  '(R$1.234,57)');
+        $mapValues[] = array('pt-BR', \Numberformatter::CURRENCY, 0, 2, -1, 'R$0,00');
+        $mapValues[] = array('pt-BR', \Numberformatter::CURRENCY, 0, 2, 6, 'R$0,00');
+        $mapValues[] = array('pt-BR', \Numberformatter::CURRENCY, 1234.5678, -1, -1, 'R$1.234,57');
+        $mapValues[] = array('pt-BR', \Numberformatter::CURRENCY, 1234.5678, -1, 4, 'R$1.234,5678');
+        $mapValues[] = array('pt-BR', \Numberformatter::CURRENCY, 1234.5678, -1, 6, 'R$1.234,5678');
+        $mapValues[] = array('pt-BR', \Numberformatter::CURRENCY, -1234.5678, -1, 2, '-R$1.234,57');
 
         $mapValues[] = array('pt-PT', \Numberformatter::CURRENCY, 0, -1, -1, '0,00 €');
-        $mapValues[] = array('pt-PT', \Numberformatter::CURRENCY, 0,  2, -1, '0,00 €');
-        $mapValues[] = array('pt-PT', \Numberformatter::CURRENCY, 0,  2,  6, '0,00 €');
-        $mapValues[] = array('pt-PT', \Numberformatter::CURRENCY, 1234.5678,  -1, -1, '1 234,57 €');
-        $mapValues[] = array('pt-PT', \Numberformatter::CURRENCY, 1234.5678,  -1, 4,  '1 234,5678 €');
-        $mapValues[] = array('pt-PT', \Numberformatter::CURRENCY, 1234.5678,  -1, 6,  '1 234,5678 €');
-        $mapValues[] = array('pt-PT', \Numberformatter::CURRENCY, -1234.5678, -1, 2,  '-1 234,57 €');
+        $mapValues[] = array('pt-PT', \Numberformatter::CURRENCY, 0, 2, -1, '0,00 €');
+        $mapValues[] = array('pt-PT', \Numberformatter::CURRENCY, 0, 2, 6, '0,00 €');
+        $mapValues[] = array('pt-PT', \Numberformatter::CURRENCY, 1234.5678, -1, -1, '1 234,57 €');
+        $mapValues[] = array('pt-PT', \Numberformatter::CURRENCY, 1234.5678, -1, 4, '1 234,5678 €');
+        $mapValues[] = array('pt-PT', \Numberformatter::CURRENCY, 1234.5678, -1, 6, '1 234,5678 €');
+        $mapValues[] = array('pt-PT', \Numberformatter::CURRENCY, -1234.5678, -1, 2, '-1 234,57 €');
 
         $mapValues[] = array('ko-KR', \Numberformatter::CURRENCY, 0, -1, -1, '₩0');
-        $mapValues[] = array('ko-KR', \Numberformatter::CURRENCY, 0,  2, -1, '₩0.00');
-        $mapValues[] = array('ko-KR', \Numberformatter::CURRENCY, 0,  2,  6, '₩0.00');
-        $mapValues[] = array('ko-KR', \Numberformatter::CURRENCY, 1234.5678,  -1, -1, '₩1,235');
-        $mapValues[] = array('ko-KR', \Numberformatter::CURRENCY, 1234.5678,  -1, 4,  '₩1,234.5678');
-        $mapValues[] = array('ko-KR', \Numberformatter::CURRENCY, 1234.5678,  -1, 6,  '₩1,234.5678');
-        $mapValues[] = array('ko-KR', \Numberformatter::CURRENCY, -1234.5678, -1, 2,  '-₩1,234.57');
+        $mapValues[] = array('ko-KR', \Numberformatter::CURRENCY, 0, 2, -1, '₩0.00');
+        $mapValues[] = array('ko-KR', \Numberformatter::CURRENCY, 0, 2, 6, '₩0.00');
+        $mapValues[] = array('ko-KR', \Numberformatter::CURRENCY, 1234.5678, -1, -1, '₩1,235');
+        $mapValues[] = array('ko-KR', \Numberformatter::CURRENCY, 1234.5678, -1, 4, '₩1,234.5678');
+        $mapValues[] = array('ko-KR', \Numberformatter::CURRENCY, 1234.5678, -1, 6, '₩1,234.5678');
+        $mapValues[] = array('ko-KR', \Numberformatter::CURRENCY, -1234.5678, -1, 2, '(₩1,234.57)');
 
         $mapValues[] = array('nl-NL', \Numberformatter::CURRENCY, 0, -1, -1, '€ 0,00');
-        $mapValues[] = array('nl-NL', \Numberformatter::CURRENCY, 0,  2, -1, '€ 0,00');
-        $mapValues[] = array('nl-NL', \Numberformatter::CURRENCY, 0,  2,  6, '€ 0,00');
-        $mapValues[] = array('nl-NL', \Numberformatter::CURRENCY, 1234.5678,  -1, -1, '€ 1.234,57');
-        $mapValues[] = array('nl-NL', \Numberformatter::CURRENCY, 1234.5678,  -1, 6,  '€ 1.234,5678');
-        $mapValues[] = array('nl-NL', \Numberformatter::CURRENCY, -1234.5678, -1, 2,  '€ 1.234,57-');
+        $mapValues[] = array('nl-NL', \Numberformatter::CURRENCY, 0, 2, -1, '€ 0,00');
+        $mapValues[] = array('nl-NL', \Numberformatter::CURRENCY, 0, 2, 6, '€ 0,00');
+        $mapValues[] = array('nl-NL', \Numberformatter::CURRENCY, 1234.5678, -1, -1, '€ 1.234,57');
+        $mapValues[] = array('nl-NL', \Numberformatter::CURRENCY, 1234.5678, -1, 6, '€ 1.234,5678');
+        $mapValues[] = array('nl-NL', \Numberformatter::CURRENCY, -1234.5678, -1, 2, '€ 1.234,57-');
 
         $mapValues[] = array('en-GB', \Numberformatter::CURRENCY, 0, -1, -1, '£0.00');
-        $mapValues[] = array('en-GB', \Numberformatter::CURRENCY, 0,  2, -1, '£0.00');
-        $mapValues[] = array('en-GB', \Numberformatter::CURRENCY, 0,  2,  6, '£0.00');
-        $mapValues[] = array('en-GB', \Numberformatter::CURRENCY, 1234.5678,  -1, -1, '£1,234.57');
-        $mapValues[] = array('en-GB', \Numberformatter::CURRENCY, 1234.5678,  -1, 6,  '£1,234.5678');
-        $mapValues[] = array('en-GB', \Numberformatter::CURRENCY, -1234.5678, -1, 2,  '-£1,234.57');
+        $mapValues[] = array('en-GB', \Numberformatter::CURRENCY, 0, 2, -1, '£0.00');
+        $mapValues[] = array('en-GB', \Numberformatter::CURRENCY, 0, 2, 6, '£0.00');
+        $mapValues[] = array('en-GB', \Numberformatter::CURRENCY, 1234.5678, -1, -1, '£1,234.57');
+        $mapValues[] = array('en-GB', \Numberformatter::CURRENCY, 1234.5678, -1, 6, '£1,234.5678');
+        $mapValues[] = array('en-GB', \Numberformatter::CURRENCY, -1234.5678, -1, 2, '-£1,234.57');
 
         return $mapValues;
     }
@@ -164,22 +172,39 @@ class localizationTest extends \PHPUnit_Framework_TestCase {
     /**
      * @dataProvider provider_formatSimpleCurrency
      */
-    public function test_formatSimpleCurrency($locale, $type, $value, $minimumDigits, $maximumDigits, $expected) {
+    public function test_formatSimpleCurrency($locale, $type, $value, $minimumDigits, $maximumDigits, $expected)
+    {
         $this->localization->setDefault($locale);
         $result = $this->localization->formatNumber($value, $type, $minimumDigits, $maximumDigits);
 
         $this->assertEquals($expected, $result);
     }
 
-    public function test_formatSimpleDate() {
+    public function provider_formatSimpleDate()
+    {
+        $mapValues[] = [1454539596, 'asia/seoul', 'Feb 4, 2016',];
+        $mapValues[] = [1454539596, 'Asia/Seoul', 'Feb 4, 2016',];
+
+        return $mapValues;
+    }
+
+    /**
+     * @dataProvider provider_formatSimpleDate
+     */
+    public function test_formatSimpleDate($time, $timezone, $expected)
+    {
+        $this->localization->setDefault('en_US');
+        $result = $this->localization->formatSimpleDate($time, $timezone);
+        $this->assertEquals($result, $expected);
+    }
+
+    public function test_formatSimpleTime()
+    {
         $this->markTestIncomplete('Not completed yet');
     }
 
-    public function test_formatSimpleTime() {
-        $this->markTestIncomplete('Not completed yet');
-    }
-
-    public function provider_getCurrencyISOCode() {
+    public function provider_getCurrencyISOCode()
+    {
         $mapValues[] = array('pt-BR', 'BRL');
         $mapValues[] = array('pt-PT', 'EUR');
         $mapValues[] = array('ko-KR', 'KRW');
@@ -195,14 +220,16 @@ class localizationTest extends \PHPUnit_Framework_TestCase {
     /**
      * @dataProvider provider_getCurrencyISOCode
      */
-    public function test_getCurrencyISOCode($locale, $expected) {
+    public function test_getCurrencyISOCode($locale, $expected)
+    {
         $this->localization->setDefault($locale);
         $result = $this->localization->getCurrencyISOCode();
 
         $this->assertEquals($expected, $result);
     }
 
-    public function provider_isValidTimeZone() {
+    public function provider_isValidTimeZone()
+    {
         $mapValues[] = array('America/Santiago', true);
         $mapValues[] = array('Europe/Amsterdam', true);
         $mapValues[] = array('UTC', true);
@@ -225,15 +252,20 @@ class localizationTest extends \PHPUnit_Framework_TestCase {
      * @param unknown $timezone
      * @param unknown $expected
      */
-    public function test_isValidTimeZone($timezone, $expected) {
+    public function test_isValidTimeZone($timezone, $expected)
+    {
         $result = $this->localization->isValidTimeZone($timezone);
         $this->assertEquals($expected, $result);
     }
 
-    public function provider_setTimezone() {
+    public function provider_setTimezone()
+    {
         $mapValues[] = array('UTC', 'UTC');
-        $mapValues[] = array('CET', 'Europe/Berlin');
+        // Changed behaviour in PHP 5.5+
+        $mapValues[] = array('CET', 'CET');
         $mapValues[] = array('America/Santiago', 'America/Santiago');
+        // Invalid but still accepted
+        $mapValues[] = array('asia/seoul', 'asia/seoul');
         $mapValues[] = array('XXXXXX-invalid-time-zone', 'UTC');
 
         return $mapValues;
@@ -246,12 +278,14 @@ class localizationTest extends \PHPUnit_Framework_TestCase {
      * @param unknown $timezoneName
      * @param unknown $expected
      */
-    public function test_setTimezone($timezoneName, $expected) {
+    public function test_setTimezone($timezoneName, $expected)
+    {
         $result = $this->localization->setTimezone($timezoneName);
         $this->assertEquals($expected, $result);
     }
 
-    public function provider_getTimezoneOffset() {
+    public function provider_getTimezoneOffset()
+    {
         $mapValues[] = array('hi_IN', 'hours', '2014/01/15', 5.5);
         $mapValues[] = array('hi_IN', 'z', '2014/01/15', '+0530');
         $mapValues[] = array('es_BO', 'hours', '2014/01/15', -4);
@@ -276,7 +310,8 @@ class localizationTest extends \PHPUnit_Framework_TestCase {
      * @param unknown $unit
      * @param unknown $expected
      */
-    public function test_getTimezoneOffset($locale, $unit, $when, $expected) {
+    public function test_getTimezoneOffset($locale, $unit, $when, $expected)
+    {
         $this->localization->setDefault($locale);
         $result = $this->localization->getTimezoneOffset($unit, $when);
 
