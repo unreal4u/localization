@@ -232,18 +232,9 @@ class localization
         } else {
             $timezoneId = $this->timezoneId;
         }
+        $this->setTimezone($timezoneId);
 
-        /*
-         * Kind of stupid code, hence this clarification: the \intlDateFormatter doesn't accept "asia/seoul" but does
-         * accept "Asia/Seoul", while the \DateTimeZone does accept both as valid. This last one however also returns
-         * the invalid name back to the user, which is why I can't use that functionality. Up until now, the only fix
-         * I've been able to implement is replacing the original string.
-         */
-        if (strpos($timezoneId, '/') !== 0) {
-            $timezoneId = str_replace(' ', '/', ucwords(str_replace('/', ' ', $timezoneId)));
-        }
-
-        return \intlDateFormatter::create($this->_currentLocale, $dateConstant, $timeConstant, $timezoneId);
+        return \intlDateFormatter::create($this->_currentLocale, $dateConstant, $timeConstant, $this->getTimezoneOffset('eo'));
     }
 
     /**
@@ -384,6 +375,13 @@ class localization
                     $sign = '-';
                 }
                 $return = $sign . str_pad(gmdate("Hi", abs($return)), 4, '0', STR_PAD_LEFT);
+                break;
+            case 'eo': // Explicit offset, almost the same as the above, but in a slightly different format
+                $sign = '+';
+                if ($return < 0) {
+                    $sign = '-';
+                }
+                $return = 'GMT'.$sign . str_pad(gmdate("H:i", abs($return)), 4, '0', STR_PAD_LEFT);
                 break;
         }
 
